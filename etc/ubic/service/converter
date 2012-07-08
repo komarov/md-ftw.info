@@ -1,0 +1,13 @@
+use Ubic::Service::SimpleDaemon;
+
+my $ROOT = $ENV{CONVERTER_ROOT};
+
+Ubic::Service::SimpleDaemon->new(
+    bin    => "$ROOT/bin/converter.pl",
+    stdout => "$ROOT/logs/converter.log",
+    stderr => "$ROOT/logs/converter.err.log",
+    env    => {
+        QUEUE_DIR  => "$ROOT/queue",
+        DATA_DIR   => "$ROOT/data",
+    },
+);

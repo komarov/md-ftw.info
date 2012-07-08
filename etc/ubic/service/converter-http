@@ -1,0 +1,13 @@
+use Ubic::Service::Plack;
+
+my $ROOT = $ENV{CONVERTER_ROOT};
+
+return Ubic::Service::Plack->new({
+    server   => "Starman",
+    app      => "$ROOT/psgi/converter-http.psgi",
+    port     => $ENV{CONVERTER_HTTP_PORT},
+    ubic_log => "$ROOT/logs/ubic.log",
+    stdout   => "/dev/null",
+    stderr   => "$ROOT/logs/converter-http.log",
+    env      => {PLACK_ENV => "deployment"},
+});

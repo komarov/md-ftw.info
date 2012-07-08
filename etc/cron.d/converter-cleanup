@@ -1,0 +1,2 @@
+* * * * * root [ -z "$CONVERTER_ROOT" ] || find $CONVERTER_ROOT/data -type d -mmin +15 -exec rm -rf {} \; 
+
