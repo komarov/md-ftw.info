@@ -74,7 +74,7 @@ sub process_task
     my $dst = Task::get_dst_path($task_id);
 
     if (-f $src) {
-        system($PANDOC_BIN, $src, '-o', $dst) or die $!;
+        system($PANDOC_BIN, $src, '-o', $dst);
         if (-f $dst) {
             msg "created $dst";
         } else {
