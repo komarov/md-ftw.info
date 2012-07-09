@@ -8,7 +8,7 @@ converter.pl
 =head1 DESCRIPTION
 
 Processes task queue with the help of pandoc.
-Started by ubic.
+Is started by ubic.
 
 =cut
 
@@ -18,6 +18,7 @@ use strict;
 use warnings;
 
 use Linux::Inotify2;
+use List::Util qw/first/;
 use POSIX qw/strftime/;
 
 use FindBin qw/$Bin/;
@@ -29,10 +30,14 @@ $| = 1;
 
 my $QUEUE_DIR = $Task::QUEUE_DIR = $ENV{QUEUE_DIR};
 my $DATA_DIR  = $Task::DATA_DIR  = $ENV{DATA_DIR};
-my ($PANDOC_BIN) = `which pandoc`;
-chomp $PANDOC_BIN;
+my $CONVERTER_BIN = first {-x "/usr/bin/$_"} ;
+for my $candidate (qw/markdown2pdf pandoc/) {
+    ($CONVERTER_BIN) = `which $candidate`;
+    chomp $CONVERTER_BIN;
+    last if $CONVERTER_BIN;
+}
 
-die "couldn't find pandoc" unless $PANDOC_BIN && -x $PANDOC_BIN;
+die "couldn't find pandoc" unless $CONVERTER_BIN && -x $CONVERTER_BIN;
 die "no queue dir $QUEUE_DIR" unless -d $QUEUE_DIR;
 die "no data dir $DATA_DIR" unless -d $DATA_DIR;
 
@@ -74,7 +79,7 @@ sub process_task
     my $dst = Task::get_dst_path($task_id);
 
     if (-f $src) {
-        system($PANDOC_BIN, $src, '-o', $dst);
+        system($CONVERTER_BIN, $src, '-o', $dst);
         if (-f $dst) {
             msg "created $dst";
         } else {
@@ -89,5 +94,5 @@ sub process_task
 sub msg($)
 {
     my $msg = shift;
-    say sprintf "%s\t%s", strftime("%Y-%m-%d %H-%M-%S", localtime), $msg;
+    say sprintf "%s\t%s", strftime("%Y-%m-%d %H:%M:%S", localtime), $msg;
 }
