@@ -1,2 +1,2 @@
-* * * * * find /var/www/md-ftw.info/data -type d -mmin +15 -exec rm -rf '{}' '+' 
+* * * * * find /var/www/md-ftw.info/data -mindepth 1 -type d -mmin +15 -exec rm -rf '{}' '+' 
 
